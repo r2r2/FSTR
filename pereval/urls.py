@@ -5,7 +5,7 @@ from pereval import views
 
 
 router = routers.DefaultRouter()
-router.register(r'submitData', views.SubmitDataView)
+router.register(r'submitData', views.SubmitDataViewSet, basename='submitData')
 
 
 urlpatterns = [

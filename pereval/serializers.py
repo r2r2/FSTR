@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from drf_writable_nested.serializers import WritableNestedModelSerializer
+from drf_writable_nested.serializers import WritableNestedModelSerializer, NestedUpdateMixin
 
 from pereval.models import Added, Coords, UserProfile, Level, Image
 
@@ -28,7 +28,7 @@ class LevelSerializer(serializers.ModelSerializer):
         exclude = ('id',)
 
 
-class ImageSerializer(serializers.ModelSerializer):
+class ImageSerializer(WritableNestedModelSerializer):
     """Uploading photo serialization"""
 
     class Meta:
@@ -36,11 +36,11 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AddedListSerializer(WritableNestedModelSerializer):
+class AddedSerializer(WritableNestedModelSerializer):
     """Added model serializer"""
     coords = CoordsSerializer()
     user = UserProfileSerializer()
-    images = ImageSerializer(many=True)
+    images = ImageSerializer()
     level = LevelSerializer()
 
     class Meta:
@@ -51,10 +51,19 @@ class AddedListSerializer(WritableNestedModelSerializer):
         read_only_fields = ('id', 'type', 'add_time')
 
 
+class AddedUpdateSerializer(NestedUpdateMixin, serializers.ModelSerializer):
+    """PUT method serializer for Added model"""
+    coords = CoordsSerializer()
+    user = UserProfileSerializer(read_only=True)
+    images = ImageSerializer(write_only=True)
+    level = LevelSerializer()
 
-
-
-
+    class Meta:
+        model = Added
+        fields = ('id', 'status', 'beauty_title', 'title', 'other_titles',
+                  'connect', 'add_time', 'user', 'coords',
+                  'type', 'level', 'images')
+        read_only_fields = ('id', 'type', 'add_time', 'status', 'user')
 
 
 

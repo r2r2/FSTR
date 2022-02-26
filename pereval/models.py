@@ -17,14 +17,7 @@ class UserProfile(models.Model):
 
 class Added(models.Model):
     """Карточка перевала"""
-    STATUS_CHOICES = [
-        ('new', 'new'),
-        ('pending', 'pending'),
-        ('resolved', 'resolved'),
-        ('accepted', 'accepted'),
-        ('rejected', 'rejected')
-    ]
-    status = models.CharField(choices=STATUS_CHOICES, max_length=8, default='new')
+    status = models.CharField(max_length=20, default='new')
     type = models.CharField(max_length=4, default='pass')
     add_time = models.DateTimeField(auto_now_add=True)
 
@@ -35,7 +28,7 @@ class Added(models.Model):
 
     coords = models.ForeignKey('Coords', on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    images = models.ManyToManyField('Image', related_name='addeds')
+    images = models.ForeignKey('Image', on_delete=models.CASCADE, related_name='addeds')
     level = models.ForeignKey(
         'Level', on_delete=models.CASCADE, related_name='Level', null=True, blank=True
     )
@@ -54,7 +47,13 @@ class Level(models.Model):
 
 class Image(models.Model):
     """Фото перевала"""
-    image = models.ImageField(upload_to='uploads/%Y/%m/%d')
+    date_added = models.DateTimeField(auto_now_add=True)
+    image1 = models.ImageField(upload_to='uploads/%Y/%m/%d')
+    image2 = models.ImageField(upload_to='uploads/%Y/%m/%d', null=True, blank=True)
+    image3 = models.ImageField(upload_to='uploads/%Y/%m/%d', null=True, blank=True)
+
+    class Meta:
+        managed = True
 
 
 class Coords(models.Model):
