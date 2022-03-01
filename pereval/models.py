@@ -52,14 +52,11 @@ class Image(models.Model):
     image2 = models.ImageField(upload_to='uploads/%Y/%m/%d', null=True, blank=True)
     image3 = models.ImageField(upload_to='uploads/%Y/%m/%d', null=True, blank=True)
 
-    class Meta:
-        managed = True
-
 
 class Coords(models.Model):
     """Координаты перевала"""
-    latitude = models.DecimalField(max_digits=22, decimal_places=16)
-    longitude = models.DecimalField(max_digits=22, decimal_places=16)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
     height = models.SmallIntegerField(validators=[MinValueValidator(limit_value=0)], default=0)
 
     def __str__(self):

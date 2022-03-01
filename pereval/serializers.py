@@ -1,6 +1,7 @@
-from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer, NestedUpdateMixin
+from rest_framework import serializers
 
+from config import settings
 from pereval.models import Added, Coords, UserProfile, Level, Image
 
 
@@ -30,6 +31,7 @@ class LevelSerializer(serializers.ModelSerializer):
 
 class ImageSerializer(WritableNestedModelSerializer):
     """Uploading photo serialization"""
+    date_added = serializers.DateTimeField(format=settings.DATETIME_FORMAT, read_only=True)
 
     class Meta:
         model = Image
@@ -42,6 +44,7 @@ class AddedSerializer(WritableNestedModelSerializer):
     user = UserProfileSerializer()
     images = ImageSerializer()
     level = LevelSerializer()
+    add_time = serializers.DateTimeField(format=settings.DATETIME_FORMAT, read_only=True)
 
     class Meta:
         model = Added
@@ -64,14 +67,3 @@ class AddedUpdateSerializer(NestedUpdateMixin, serializers.ModelSerializer):
                   'connect', 'add_time', 'user', 'coords',
                   'type', 'level', 'images')
         read_only_fields = ('id', 'type', 'add_time', 'status', 'user')
-
-
-
-
-
-
-
-
-
-
-
